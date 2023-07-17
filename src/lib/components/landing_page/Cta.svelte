@@ -1,0 +1,26 @@
+<script>
+	import { Easylogs } from 'easylogs-client';
+	import { Button } from 'flowbite-svelte';
+
+	const easyLogs = new Easylogs();
+	const ctaClick = () => {
+		easyLogs.sendLog({
+			message: `New click on the CTA Button`,
+			namespace: 'LandingPage',
+			type: 'warning',
+			website: 'localhost'
+		});
+	};
+</script>
+
+<div class="px-2">
+	<div class="bg-primary-400 mx-auto py-10 max-w-7xl text-center rounded-xl mb-28">
+		<h3 class="sm:text-6xl text-4xl font-bold mb-6 mx-auto text-center">
+			Get to know whats next for Logapp
+		</h3>
+		<p class="sm:text-lg text-base font-semibold mb-8 max-w-lg mx-auto text-center">
+			Sign up now and take the first step towards simplifying your logging process.
+		</p>
+		<Button on:click={ctaClick} size="lg" pill>Start Your Free Trial</Button>
+	</div>
+</div>
