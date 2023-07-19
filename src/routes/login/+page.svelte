@@ -54,9 +54,9 @@
 
 <main class="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
 	<div class="bg-white p-8 rounded-lg border border-gray-200 shadow-xl max-w-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-		<h1 class="text-3xl font-bold mb-4">Welcome to [Website]</h1>
+		<h1 class="text-3xl font-bold mb-4">Welcome to <b class="text-primary-500 dark:text-primary-700">Easy</b>Logs</h1>
 		<h2 class="text-lg mb-6 font-medium">
-			Sign in to your account and start tracking your website or app activities.
+			Sign in to your account to join the beta and start tracking your website or app activities.
 		</h2>
 		<Button color="light" on:click={handleGoogleLogin} class="w-full mb-6">
 			{#if googleLoading}

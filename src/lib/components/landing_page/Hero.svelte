@@ -10,14 +10,14 @@
 		Efficient, Lightweight, and Easy-to-Use Log Management Solution.
 	</p>
 
-	<div class="p-2 border border-gray-400 rounded-full sm:w-3/4 w-auto sm:mx-auto mx-4 flex mb-16">
+	<!-- <div class="p-2 border border-gray-400 rounded-full sm:w-3/4 w-auto sm:mx-auto mx-4 flex mb-16">
 		<input
 			class="border-none dark:bg-gray-900 dark:text-white focus:ring-0 grow rounded-lg"
 			placeholder="Enter your e-mail"
 			type="text"
 		/>
 		<Button size="lg" pill>Get a demo</Button>
-	</div>
+	</div> -->
 
 	<ul class="max-w-2xl flex sm:flex-row flex-col sm:space-y-0 space-y-6 justify-between items-center mx-auto font-medium sm:mb-36 mb-16 dark:text-white">
 		<li class="flex items-center space-x-3">
