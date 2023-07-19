@@ -52,13 +52,13 @@
 	};
 </script>
 
-<main class="flex items-center justify-center h-screen bg-gray-50">
-	<div class="bg-white p-8 rounded-lg border border-gray-200 shadow-xl max-w-md">
+<main class="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+	<div class="bg-white p-8 rounded-lg border border-gray-200 shadow-xl max-w-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
 		<h1 class="text-3xl font-bold mb-4">Welcome to [Website]</h1>
 		<h2 class="text-lg mb-6 font-medium">
 			Sign in to your account and start tracking your website or app activities.
 		</h2>
-		<Button color="alternative" on:click={handleGoogleLogin} class="w-full mb-6">
+		<Button color="light" on:click={handleGoogleLogin} class="w-full mb-6">
 			{#if googleLoading}
 				<Spinner class="mr-3" size="4" />
 			{:else}

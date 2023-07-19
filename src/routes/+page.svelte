@@ -5,9 +5,11 @@
 	import Cta from '$lib/components/landing_page/Cta.svelte';
 	import Pricing from '$lib/components/landing_page/Pricing.svelte';
 	import Footer from '$lib/components/landing_page/Footer.svelte';
+
+	export let data;
 </script>
 
-<Header />
+<Header loggedIn={data.session ? true : false} />
 <Hero />
 <Features />
 <Pricing />

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import moment from 'moment';
 	import { onMount } from 'svelte';
+	import { theme } from '../../store';
 
 	export let warnings: number[][] | undefined;
 	export let errors: number[][] | undefined;
@@ -9,13 +10,21 @@
 	export let date: string;
 
 	let chartView: any;
+	let currentTheme = 'dark';
 
 	onMount(async () => {
 		const { chart } = await import('svelte-apexcharts');
 		chartView = chart;
 	});
 
+	theme.subscribe((val) => {
+		if (val) {
+			currentTheme = val;
+		}
+	});
+
 	$: {
+		theme
 		options = {
 			...options,
 			series: [
@@ -39,7 +48,21 @@
 					data: successes,
 					color: '#31c48d'
 				}
-			]
+			],
+			chart: {
+				type: 'area',
+				toolbar: {
+					show: false
+				},
+				height: 400,
+				zoom: {
+					enabled: false
+				},
+				background: currentTheme == 'dark' ? '#111827' : '#fff'
+			},
+			theme: {
+				mode: currentTheme
+			}
 		};
 		options = {
 			...options,
@@ -60,7 +83,11 @@
 			height: 400,
 			zoom: {
 				enabled: false
-			}
+			},
+			background: currentTheme == 'dark' ? '#111827' : '#fff'
+		},
+		theme: {
+			mode: currentTheme
 		},
 		stroke: {
 			curve: 'smooth'

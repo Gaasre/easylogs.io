@@ -1,14 +1,26 @@
 <script lang="ts">
-	import { Badge, Button, Input, Label, Modal, Radio, Spinner } from 'flowbite-svelte';
-	import { Filter, Plus } from 'lucide-svelte';
+	import {
+		Badge,
+		Button,
+		Checkbox,
+		CloseButton,
+		Input,
+		Label,
+		Modal,
+		Radio,
+		Spinner
+	} from 'flowbite-svelte';
+	import { Filter, Plus, X } from 'lucide-svelte';
 	import type { IFilter } from '$lib/interfaces/Filter';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 
 	export let newFilter: (filter: IFilter) => Promise<void>;
+	export let deleteFilter: (filter: IFilter) => Promise<void>;
 	export let filters: IFilter[];
 
 	let loading = false;
+	let loadingDelete = -1;
 
 	const saveFilter = async () => {
 		loading = true;
@@ -26,7 +38,6 @@
 	let newFilterType = 'contains';
 	let newFilterValue = '';
 
-	let active = false;
 	let filterModal = false;
 
 	const toggleFilter = (filterIndex: number) => {
@@ -38,22 +49,41 @@
 				.join(',')}`
 		);
 	};
+
+	const removeFilter = async (filterIndex: number) => {
+		loadingDelete = filterIndex;
+		if (filters[filterIndex].active) {
+			toggleFilter(filterIndex);
+		}
+		await deleteFilter(filters[filterIndex]);
+		await invalidateAll();
+		loadingDelete = -1;
+	};
 </script>
 
 <Label>Saved Filters:</Label>
 <div>
 	{#each filters as filter, index}
-		<button class="mr-1" on:click={() => toggleFilter(index)}>
-			<Badge
-				class="transition-all duration-200 cursor-pointer"
-				color={filter.active ? 'blue' : 'dark'}
-			>
-				{#if filter.active}
-					<Filter size={8} class="mr-2" />
-				{/if}
-				{filter.name}</Badge
-			>
-		</button>
+		<Badge
+			class="transition-all duration-200 cursor-pointer mr-1"
+			color={filter.active ? 'blue' : 'dark'}
+		>
+			{#if filter.active}
+				<Filter size={8} class="mr-2" />
+			{/if}
+			<div class="flex items-center gap-2">
+				<button disabled={loadingDelete == index} on:click={() => toggleFilter(index)}>
+					{filter.name}
+				</button>
+				<button disabled={loadingDelete == index} on:click={() => removeFilter(index)}>
+					{#if loadingDelete == index}
+						<Spinner size="2" />
+					{:else}
+						<X size={10} />
+					{/if}
+				</button>
+			</div>
+		</Badge>
 	{/each}
 	<button on:click={() => (filterModal = true)}>
 		<Badge

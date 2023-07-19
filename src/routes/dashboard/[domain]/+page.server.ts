@@ -34,14 +34,14 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
 
     const anon = filters?.filter(x => x.active).map(x => {
         if (x.type == 'contains') {
-            return `%${x.value}%`
-        } else if (x.type == 'starts_with') {
-            return `${x.value}%`
-        } else if (x.type == 'ends_with') {
-            return `%${x.value}`
+            return `value.ilike.*${x.value}*`
+        } else if (x.type == 'starts-with') {
+            return `value.ilike.${x.value}*`
+        } else if (x.type == 'ends-with') {
+            return `value.ilike.*${x.value}`
         }
 
-        return `%${x.value}%`
+        return `value.ilike.*${x.value}*`
     })
 
     const { data: websites } = await supabase
@@ -61,21 +61,19 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
                 successes: [],
                 warnings: [],
                 infos: []
-            }, logs: [], websites, domain: params.domain, date
+            }, logs: [], websites, domain: params.domain, date, count: 0
         }
     }
 
-    let { data: fullLogs } = await supabase
+    let { data: fullLogs, count } = await supabase
         .from('logs')
-        .select()
+        .select('*', { count: 'exact' })
+        .or(anon && anon.length > 0 ? anon.join("&") : 'value.ilike.**')
         .eq('website', params.domain)
-        .likeAnyOf('value', ['%Dashboard%'])
         .order('date', { ascending: false })
         .gte('date', moment(date, 'YYYY-MM-DD').startOf('day').toISOString())
         .lte('date', moment(date, 'YYYY-MM-DD').endOf('day').toISOString())
         .returns<ILog[]>()
-
-    console.log(fullLogs)
 
     if (!fullLogs) {
         fullLogs = []
@@ -85,7 +83,7 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
         .from('logs')
         .select()
         .eq('website', params.domain)
-        .likeAllOf('value', (anon && anon.length > 0) ? anon : ['%%'])
+        .or(anon && anon.length > 0 ? anon.join("&") : 'value.ilike.**')
         .order('date', { ascending: false })
         .gte('date', moment(date, 'YYYY-MM-DD').startOf('day').toISOString())
         .lte('date', moment(date, 'YYYY-MM-DD').endOf('day').toISOString())
@@ -203,5 +201,5 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
         return foundHour ? foundHour : hour;
     })
 
-    return { logs, stats, statSeries, websites, domain: params.domain, date, filters }
+    return { logs: logs ?? [], stats, statSeries, websites, domain: params.domain, date, filters, count: count ?? 0 }
 }

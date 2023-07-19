@@ -6,6 +6,7 @@ import supabaseBypass from "$lib/supabaseClient.server";
 
 export const POST: RequestHandler = (async ({ request, url, locals: { supabase }, getClientAddress }) => {
     const body: LogEvent = await request.json()
+    console.log(body)
 
     if (!body.website || !body.message) {
         throw error(400)

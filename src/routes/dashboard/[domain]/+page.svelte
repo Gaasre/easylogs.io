@@ -19,13 +19,22 @@
 	} from 'flowbite-svelte';
 	import moment from 'moment';
 	import Filters from '$lib/components/Filters.svelte';
+	import Header from '$lib/components/Header.svelte';
 
 	export let data;
 
 	let offset = 1;
+	let maxPages = 1;
 	let pageLoading = false;
-	let canLoadMore = true;
 	const PAGE_COUNT = 20;
+	let canLoadMore = false;
+
+	$: {
+		data = data;
+		canLoadMore = data.count > data.logs.length;
+		maxPages = Math.ceil(data.count / PAGE_COUNT);
+		offset = 1 + (maxPages - Math.ceil(data.count / data.logs.length));
+	}
 
 	const nextDay = () => {
 		goto(
@@ -51,25 +60,40 @@
 		await data.supabase.from('filter').insert(filter);
 	};
 
+	const deleteFilter = async (filter: IFilter) => {
+		await data.supabase.from('filter').delete().eq('id', filter.id);
+	};
+
 	const loadMore = async () => {
 		const from = offset * PAGE_COUNT;
 		const to = from + PAGE_COUNT - 1;
 
 		pageLoading = true;
 
+		const anon = data.filters
+			?.filter((x) => x.active)
+			.map((x) => {
+				if (x.type == 'contains') {
+					return `value.ilike.*${x.value}*`;
+				} else if (x.type == 'starts-with') {
+					return `value.ilike.${x.value}*`;
+				} else if (x.type == 'ends-with') {
+					return `value.ilike.*${x.value}`;
+				}
+
+				return `value.ilike.*${x.value}*`;
+			});
+
 		const { data: logs } = await data.supabase
 			.from('logs')
 			.select('*')
 			.eq('website', data.domain)
+			.or(anon && anon.length > 0 ? anon.join('&') : 'value.ilike.**')
 			.order('date', { ascending: false })
 			.gte('date', moment(data.date, 'YYYY-MM-DD').startOf('day').toISOString())
 			.lte('date', moment(data.date, 'YYYY-MM-DD').endOf('day').toISOString())
 			.range(from, to)
 			.returns<ILog[]>();
-
-		if (logs && logs.length < PAGE_COUNT) {
-			canLoadMore = false;
-		}
 
 		if (data.logs && logs) {
 			data.logs = [...data.logs, ...logs];
@@ -79,8 +103,6 @@
 				el.scrollIntoView({ behavior: 'smooth' });
 			}
 		}
-
-		offset += 1;
 		pageLoading = false;
 	};
 
@@ -110,12 +132,19 @@
 	});
 </script>
 
-<Navigation />
+<Header
+	signOut={async () => {
+		await data.supabase.auth.signOut();
+		await invalidateAll();
+		goto('/');
+	}}
+	email={data.session?.user.email ?? ''}
+/>
 <div class="py-8" />
 <div class="container w-full mx-auto">
 	<div class="flex justify-between mb-6">
 		<div>
-			<Button color="alternative"><Chevron>{data.domain}</Chevron></Button>
+			<Button size="sm" color="alternative"><Chevron>{data.domain}</Chevron></Button>
 			<Dropdown class="px-3 pb-3 text-sm z-20">
 				<div slot="header" class="p-3">
 					<Search size="md" />
@@ -132,7 +161,7 @@
 			</Dropdown>
 		</div>
 		<div>
-			<ButtonGroup>
+			<ButtonGroup size="sm">
 				<Button on:click={previousDay} color="primary"><ChevronLeft /></Button>
 				<Input type="date" bind:value={data.date} on:input={changePage} />
 				<Button on:click={nextDay} color="primary"><ChevronRight /></Button>
@@ -140,10 +169,12 @@
 		</div>
 	</div>
 	<div class="mb-6">
-		<Filters {newFilter} filters={data.filters ?? []} />
+		<Filters {newFilter} filters={data.filters ?? []} {deleteFilter} />
 	</div>
 	<div>
-		<div class="px-4 py-2 rounded-lg border border-gray-200 shadow-lg">
+		<div
+			class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 dark:text-white shadow-lg"
+		>
 			<div class="py-4 sm:py-6 grid sm:grid-cols-4 grid-cols-2 gap-y-8">
 				<div class="border-r px-10">
 					<div class="uppercase font-medium">Errors</div>

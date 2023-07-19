@@ -9,12 +9,11 @@ const config = {
   ],
 
   darkMode: 'class',
-  
+
   theme: {
     extend: {
       colors: {
-        // flowbite-svelte
-        primary: { 50: '#FFF5F2', 100: '#FFF1EE', 200: '#FFE4DE', 300: '#FEF4DF', 400: '#FDE7C0', 500: '#F9D49F', 600: '#F4C085', 700: '#EDA35E', 800: '#CB7E44', 900: '#AA5E2F'},
+        primary: {"50":"#ecfdf5","100":"#d1fae5","200":"#a7f3d0","300":"#6ee7b7","400":"#34d399","500":"#10b981","600":"#059669","700":"#047857","800":"#065f46","900":"#064e3b"},
         warning: '#faca15',
         info: '#76a9fa',
         success: '#31c48d',
