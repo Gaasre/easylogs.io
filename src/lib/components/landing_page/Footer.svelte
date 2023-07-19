@@ -14,12 +14,9 @@
 		<Footer footerType="socialmedia">
 			<div class="md:flex md:justify-between">
 				<div class="mb-6 md:mb-0">
-					<FooterBrand
-						href="https://flowbite.com"
-						src="/images/flowbite-svelte-icon-logo.svg"
-						alt="EasyLogs Logo"
-						name="EasyLogs"
-					/>
+					<a href="/" class="text-2xl">
+						<b class="text-primary-500 dark:text-primary-700">Easy</b>Logs
+					</a>
 				</div>
 				<div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
 					<div>

@@ -15,7 +15,7 @@
 			<Button href="/dashboard" class="font-bold">Dashboard</Button>
 		{:else}
 			<Button href="/login" class="font-bold">
-				Get Early Access
+				Join Beta
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
