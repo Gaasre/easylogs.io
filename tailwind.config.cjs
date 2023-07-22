@@ -13,7 +13,19 @@ const config = {
   theme: {
     extend: {
       colors: {
-        primary: { 50: '#FFF5F2', 100: '#FFF1EE', 200: '#FFE4DE', 300: '#FFD5CC', 400: '#FFBCAD', 500: '#FE795D', 600: '#EF562F', 700: '#EB4F27', 800: '#CC4522', 900: '#A5371B'},
+        primary: {
+          50: "#F6FAFE",
+          100: "#E9F2FC",
+          200: "#D3E6F8",
+          300: "#BDD9F5",
+          400: "#A3C9F0",
+          500: "#84B8EC",
+          600: "#60A3E6",
+          700: "#2E86DE",
+          800: "#1E6EBD",
+          900: "#16528D",
+          950: "#103B65"
+        },
         warning: '#faca15',
         info: '#76a9fa',
         success: '#31c48d',

@@ -9,6 +9,11 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<title>EasyLogs.io - Simplify Your Log Management</title>
+	<meta name="description" content="Streamline log management effortlessly with EasyLogs.io. Our efficient and user-friendly platform simplifies the process, empowering you to gain real-time insights.">
+</svelte:head>
+
 <Header loggedIn={data.session ? true : false} />
 <Hero />
 <Features />

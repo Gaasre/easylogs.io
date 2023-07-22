@@ -52,6 +52,11 @@
 	};
 </script>
 
+<svelte:head>
+	<title>EasyLogs.io - Simplify Your Log Management</title>
+	<meta name="description" content="Streamline log management effortlessly with EasyLogs.io. Our efficient and user-friendly platform simplifies the process, empowering you to gain real-time insights.">
+</svelte:head>
+
 <main class="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
 	<div class="bg-white p-8 rounded-lg border border-gray-200 shadow-xl max-w-md dark:bg-gray-800 dark:border-gray-700 dark:text-white">
 		<h1 class="text-3xl font-bold mb-4">Welcome to <b class="text-primary-500 dark:text-primary-700">Easy</b>Logs</h1>

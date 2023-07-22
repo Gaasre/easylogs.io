@@ -3,7 +3,7 @@ import { redirect } from "@sveltejs/kit"
 import moment from "moment"
 import type { PageServerLoad } from "./$types"
 
-export const load: PageServerLoad = async ({ url, locals: { getSession, supabase }, params }) => {
+export const load: PageServerLoad = async ({ locals: { getSession, supabase } }) => {
     const session = await getSession()
     if (!session) {
         throw redirect(303, '/')

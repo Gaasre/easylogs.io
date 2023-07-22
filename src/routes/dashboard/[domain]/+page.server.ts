@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
     let { data: filters } = await supabase
         .from('filter')
         .select('*')
-        .returns<IFilter[]>()
+        .returns<IFilter[]>();
 
     if (filters && activeFilterStr) {
         const activeFilters = activeFilterStr?.split(',');
@@ -44,10 +44,31 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
         return `value.ilike.*${x.value}*`
     })
 
-    const { data: websites } = await supabase
-        .from('website')
-        .select('*')
-        .returns<Website[]>()
+
+    let [{ data: websites }, { data: fullLogs, count }, { data: logs }] = await Promise.all([
+        supabase
+            .from('website')
+            .select('*')
+            .returns<Website[]>(),
+        supabase
+            .from('logs')
+            .select('*', { count: 'exact' })
+            .or(anon && anon.length > 0 ? anon.join("&") : 'value.ilike.**')
+            .eq('website', params.domain)
+            .order('date', { ascending: false })
+            .gte('date', moment(date, 'YYYY-MM-DD').startOf('day').toISOString())
+            .lte('date', moment(date, 'YYYY-MM-DD').endOf('day').toISOString())
+            .returns<ILog[]>(),
+        await supabase
+            .from('logs')
+            .select('*', { count: 'exact' })
+            .or(anon && anon.length > 0 ? anon.join("&") : 'value.ilike.**')
+            .eq('website', params.domain)
+            .order('date', { ascending: false })
+            .gte('date', moment(date, 'YYYY-MM-DD').startOf('day').toISOString())
+            .lte('date', moment(date, 'YYYY-MM-DD').endOf('day').toISOString())
+            .returns<ILog[]>()
+    ])
 
     if (!websites) {
         return {
@@ -65,30 +86,9 @@ export const load: PageServerLoad = async ({ url, locals: { getSession, supabase
         }
     }
 
-    let { data: fullLogs, count } = await supabase
-        .from('logs')
-        .select('*', { count: 'exact' })
-        .or(anon && anon.length > 0 ? anon.join("&") : 'value.ilike.**')
-        .eq('website', params.domain)
-        .order('date', { ascending: false })
-        .gte('date', moment(date, 'YYYY-MM-DD').startOf('day').toISOString())
-        .lte('date', moment(date, 'YYYY-MM-DD').endOf('day').toISOString())
-        .returns<ILog[]>()
-
     if (!fullLogs) {
         fullLogs = []
     }
-
-    const { data: logs } = await supabase
-        .from('logs')
-        .select()
-        .eq('website', params.domain)
-        .or(anon && anon.length > 0 ? anon.join("&") : 'value.ilike.**')
-        .order('date', { ascending: false })
-        .gte('date', moment(date, 'YYYY-MM-DD').startOf('day').toISOString())
-        .lte('date', moment(date, 'YYYY-MM-DD').endOf('day').toISOString())
-        .limit(PAGE_COUNT)
-        .returns<ILog[]>()
 
     const stats = {
         errors: fullLogs?.filter(log => log.type == 'error').length,
