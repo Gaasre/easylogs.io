@@ -7,6 +7,10 @@ import type { IFilter } from '$lib/interfaces/Filter'
 
 const PAGE_COUNT = 20;
 
+export const config = {
+    runtime: 'nodejs18.x'
+};
+
 export const load: PageServerLoad = async ({ url, locals: { getSession, supabase }, params }) => {
     const session = await getSession()
     if (!session) {
