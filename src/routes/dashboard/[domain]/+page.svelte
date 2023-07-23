@@ -20,6 +20,7 @@
 	import moment from 'moment';
 	import Filters from '$lib/components/Filters.svelte';
 	import Header from '$lib/components/Header.svelte';
+	import { Easylogs } from 'easylogs-client';
 
 	export let data;
 
@@ -35,6 +36,8 @@
 		maxPages = Math.ceil(data.count / PAGE_COUNT);
 		offset = 1 + (maxPages - Math.ceil(data.count / data.logs.length));
 	}
+
+	const easyLogs = new Easylogs();
 
 	const nextDay = () => {
 		goto(
@@ -58,10 +61,22 @@
 	const newFilter = async (filter: IFilter) => {
 		filter.user_id = data.session?.user.id;
 		await data.supabase.from('filter').insert(filter);
+		easyLogs.sendLog({
+			message: 'User successfully created a new filter',
+			namespace: 'dashboard',
+			type: 'success',
+			website: 'easylogs.io'
+		});
 	};
 
 	const deleteFilter = async (filter: IFilter) => {
 		await data.supabase.from('filter').delete().eq('id', filter.id);
+		easyLogs.sendLog({
+			message: 'User successfully deleted a filter',
+			namespace: 'dashboard',
+			type: 'success',
+			website: 'easylogs.io'
+		});
 	};
 
 	const loadMore = async () => {
@@ -134,10 +149,19 @@
 
 <svelte:head>
 	<title>EasyLogs.io - Dashboard</title>
-	<meta name="description" content="Streamline log management effortlessly with EasyLogs.io. Our efficient and user-friendly platform simplifies the process, empowering you to gain real-time insights.">
+	<meta
+		name="description"
+		content="Streamline log management effortlessly with EasyLogs.io. Our efficient and user-friendly platform simplifies the process, empowering you to gain real-time insights."
+	/>
 </svelte:head>
 <Header
 	signOut={async () => {
+		easyLogs.sendLog({
+			message: 'User just signed out',
+			namespace: 'dashboard',
+			type: 'warning',
+			website: 'easylogs.io'
+		});
 		await data.supabase.auth.signOut();
 		await invalidateAll();
 		goto('/');

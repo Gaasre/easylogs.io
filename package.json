@@ -41,7 +41,7 @@
 		"@supabase/auth-ui-svelte": "^0.2.2",
 		"@supabase/supabase-js": "^2.26.0",
 		"apexcharts": "^3.41.0",
-		"easylogs-client": "^1.0.1",
+		"easylogs-client": "^1.0.3",
 		"flowbite": "^1.6.6",
 		"flowbite-svelte": "^0.38.5",
 		"lucide-svelte": "^0.259.0",
